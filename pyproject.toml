@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "team-league-dataflow-pipeline"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+apache-beam = {extras = ["gcp"], version = "^2.55.1"}
+google-cloud-storage = "^2.16.0"
+google-cloud-bigquery = "^3.20.1"
+google-cloud-pubsub = "^2.21.1"
+black = "^24.4.0"
+dacite = "^1.8.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
