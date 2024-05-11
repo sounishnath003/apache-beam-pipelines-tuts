@@ -1,0 +1,10 @@
+[
+  { "name": "email", "type": "STRING" },
+  { "name": "address", "type": "STRING" },
+  { "name": "avatar", "type": "STRING" },
+  { "name": "avg_session_length", "type": "STRING" },
+  { "name": "time_on_app", "type": "STRING" },
+  { "name": "time_on_website", "type": "STRING" },
+  { "name": "length_of_membership", "type": "STRING" },
+  { "name": "yearly_amount_spent", "type": "STRING" }
+]
