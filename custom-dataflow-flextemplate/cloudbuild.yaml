@@ -1,0 +1,27 @@
+steps:
+  - id: configure docker repository
+    name: "gcr.io/cloud-builders/gcloud"
+    script: |
+      gcloud auth configure-docker asia-south1-docker.pkg.dev
+
+  - id: build custom flex container
+    name: "gcr.io/cloud-builders/gcloud"
+    script: |
+      gcloud config set builds/use_kaniko True
+      gcloud config set builds/kaniko_cache_ttl 600
+      gcloud beta builds submit --tag asia-south1-docker.pkg.dev/sounish-cloud-workstation/appp/dataflow/apppimg:v1 .
+
+  - id: build flex template build metadata
+    name: "gcr.io/cloud-builders/gcloud"
+    script: |
+      gcloud dataflow flex-template build gs://sounish-cloud-workstation/templates/appp/template-params --image asia-south1-docker.pkg.dev/sounish-cloud-workstation/appp/dataflow/apppimg:v1 --sdk-language PYTHON --metadata-file job-metadata
+
+  - id: run dataflow job
+    name: "gcr.io/cloud-builders/gcloud"
+    script: |
+      gcloud dataflow flex-template run basic-beam-pipeline-test-$(date +'%Y%m%d%H%M%S') --template-file-gcs-location gs://sounish-cloud-workstation/templates/appp/template-params --region us-central1 --temp-location gs://sounish-cloud-workstation/dataflow/temp --staging-location gs://sounish-cloud-workstation/dataflow/staging --num-workers 1 --worker-machine-type n1-standard-1 --worker-region us-central1 --parameters output=gs://sounish-cloud-workstation/appp/dataflow-output/
+
+serviceAccount: projects/sounish-cloud-workstation/serviceAccounts/797087556919-compute@developer.gserviceaccount.com
+
+options:
+  logging: CLOUD_LOGGING_ONLY
