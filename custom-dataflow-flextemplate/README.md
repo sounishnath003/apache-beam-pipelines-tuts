@@ -26,6 +26,29 @@ gcloud config set builds/kaniko_cache_ttl 600
 gcloud beta builds submit --tag asia-south1-docker.pkg.dev/sounish-cloud-workstation/appp/dataflow/apppimg:v1 .
 ```
 
+## Prebuild custom container sdk for dataflow job
+
+```bash
+export REGION=us-central1
+export PROJECT_ID=sounish-cloud-workstation
+export IMAGE_NAME=asia-south1-docker.pkg.dev/sounish-cloud-workstation/appp/dataflow/apppimg:v$(date +'%Y.%m.%d')
+
+gcloud config set builds/use_kaniko True
+gcloud config set builds/kaniko_cache_ttl 600
+gcloud beta builds submit --tag $IMAGE_NAME .
+
+python -m appp.main \
+  --project=$PROJECT_ID \
+  --region=$REGION \
+  --temp_location=gs://sounish-cloud-workstation/dataflow/temp \
+  --staging_location=gs://sounish-cloud-workstation/dataflow/staging \
+  --runner=DataflowRunner \
+  --experiments=use_runner_v2 \
+  --sdk_container_image=$IMAGE_NAME \
+  --sdk_location=container
+
+```
+
 ## Build flex template and upload container
 
 ```bash
